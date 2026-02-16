@@ -6,9 +6,10 @@ export const useStore = create(
     (set) => ({
       user: null,
       tasks: [],
-      setUser:(user)=>{
-        set({user})
-      }
+      setUser: (user) => {
+        set({ user });
+      },
+      logout: () => set({ user: null }),
     }),
     {
       name: "task-board-storage",
