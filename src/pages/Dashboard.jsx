@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useEffect, useState } from "react";
 import { fetchTasksFromAPI } from "../services/taskService";
@@ -20,10 +20,16 @@ const Dashboard = () => {
   const [editingTask, setEditingTask] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
 
-  const filteredTasks =
-    filterStatus === "all"
-      ? tasks
-      : tasks.filter((task) => task.status === filterStatus);
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus =
+      filterStatus === "all" || task.status === filterStatus;
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return matchesSearch && matchesStatus;
+  });
   const todoTasks = filteredTasks.filter((task) => task.status === "todo");
   const inProgressTasks = filteredTasks.filter(
     (task) => task.status === "inprogress",
@@ -93,6 +99,13 @@ const Dashboard = () => {
                 <option value="inprogress">In Progress</option>
                 <option value="completed">Completed</option>
               </select>
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="p-2 border rounded"
+              />
             </div>
           </div>
 
