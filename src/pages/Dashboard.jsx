@@ -2,10 +2,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useEffect, useState } from "react";
 import { fetchTasksFromAPI } from "../services/taskService";
+import TaskColumn from "../components/TaskColumn";
 
 const Dashboard = () => {
   const tasks = useStore((state) => state.tasks);
   const toggleTaskStatus = useStore((state)=>state.toggleTaskStatus)
+  const addTask=useStore((state)=>state.addTask)
+
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const completedTasks = tasks.filter((task) => task.status === "completed");
   const inProgressTasks = tasks.filter((task) => task.status === "inprogress");
@@ -13,6 +16,7 @@ const Dashboard = () => {
   const setTasks = useStore((state) => state.setTasks);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showModal,setShowModal]= useState(false)
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -58,48 +62,9 @@ const Dashboard = () => {
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* TODO */}
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="font-bold mb-4">Todo</h2>
-              {todoTasks.map((task) => (
-                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
-                 <p>
-                  {task.title}
-                  </p> 
-                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
-                    Move
-                  </button>
-                </div>
-              ))}
-            </div>
-            {/* INPROGRESS  */}
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="font-bold mb-4">In Progress</h2>
-              {inProgressTasks.map((task) => (
-                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
-                          <p>
-                  {task.title}
-                  </p> 
-                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
-                    Move
-                  </button>
-                </div>
-              ))}
-            </div>
-            {/* COMPLETED */}
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="font-bold mb-4">Completed</h2>
-              {completedTasks.map((task) => (
-                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
-                          <p>
-                  {task.title}
-                  </p> 
-                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
-                    Move
-                  </button>
-                </div>
-              ))}
-            </div>
+           <TaskColumn title="Todo" tasks={todoTasks} onMove={toggleTaskStatus}/>
+           <TaskColumn title="In Progress" tasks={inProgressTasks} onMove={toggleTaskStatus}/>
+           <TaskColumn title="Completed" tasks={completedTasks} onMove={toggleTaskStatus}/>
           </div>
         )}
       </div>
