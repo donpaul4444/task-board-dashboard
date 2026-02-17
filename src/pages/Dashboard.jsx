@@ -5,6 +5,10 @@ import { fetchTasksFromAPI } from "../services/taskService";
 
 const Dashboard = () => {
   const tasks = useStore((state) => state.tasks);
+  const todoTasks = tasks.filter((task) => task.status === "todo");
+  const completedTasks = tasks.filter((task) => task.status === "completed");
+  const inProgressTasks = tasks.filter((task) => task.status === "inprogress");
+
   const setTasks = useStore((state) => state.setTasks);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,11 +52,40 @@ const Dashboard = () => {
             Logout
           </button>
         </div>
-        <div className="p-6 flex-1 overflow-auto">
-          {loading && <p>Loading tasks...</p>}
-          <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-          <p>Task board will here...</p>
-        </div>
+        <h1 className="text-2xl font-bold mb-6">Task Board</h1>
+        {loading && <p>Loading tasks...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* TODO */}
+            <div className="bg-white p-4 rounded shadow">
+              <h2 className="font-bold mb-4">Todo</h2>
+              {todoTasks.map((task) => (
+                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                  {task.title}
+                </div>
+              ))}
+            </div>
+            {/* INPROGRESS  */}
+            <div className="bg-white p-4 rounded shadow">
+              <h2 className="font-bold mb-4">In Progress</h2>
+              {inProgressTasks.map((task) => (
+                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                  {task.title}
+                </div>
+              ))}
+            </div>
+            {/* COMPLETED */}
+            <div className="bg-white p-4 rounded shadow">
+              <h2 className="font-bold mb-4">Completed</h2>
+              {completedTasks.map((task) => (
+                <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                  {task.title}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
