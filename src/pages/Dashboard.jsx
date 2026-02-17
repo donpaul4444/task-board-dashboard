@@ -11,17 +11,26 @@ const Dashboard = () => {
   const toggleTaskStatus = useStore((state) => state.toggleTaskStatus);
   const updateTask = useStore((state) => state.updateTask);
   const addTask = useStore((state) => state.addTask);
-  const deleteTask = useStore((state)=>state.deleteTask)
-
-  const todoTasks = tasks.filter((task) => task.status === "todo");
-  const completedTasks = tasks.filter((task) => task.status === "completed");
-  const inProgressTasks = tasks.filter((task) => task.status === "inprogress");
+  const deleteTask = useStore((state) => state.deleteTask);
 
   const setTasks = useStore((state) => state.setTasks);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [editingTask,setEditingTask]= useState(null)
+  const [editingTask, setEditingTask] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  const filteredTasks =
+    filterStatus === "all"
+      ? tasks
+      : tasks.filter((task) => task.status === filterStatus);
+  const todoTasks = filteredTasks.filter((task) => task.status === "todo");
+  const inProgressTasks = filteredTasks.filter(
+    (task) => task.status === "inprogress",
+  );
+  const completedTasks = filteredTasks.filter(
+    (task) => task.status === "completed",
+  );
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -31,8 +40,8 @@ const Dashboard = () => {
         setTasks(data);
       } catch (error) {
         setError("Failed to fetch tasks");
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     };
     if (tasks.length === 0) {
@@ -67,13 +76,24 @@ const Dashboard = () => {
         <div className="p-6 flex-1 overflow-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Task Board</h1>
-
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-              onClick={() => setShowModal(true)}
-            >
-              Add Task
-            </button>
+            <div className="flex gap-2">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => setShowModal(true)}
+              >
+                Add Task
+              </button>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="p-2 border rounded"
+              >
+                <option value="all">All</option>
+                <option value="todo">Todo</option>
+                <option value="inprogress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
           </div>
 
           {loading && <p>Loading tasks...</p>}
@@ -84,20 +104,20 @@ const Dashboard = () => {
                 title="Todo"
                 tasks={todoTasks}
                 onMove={toggleTaskStatus}
-                 onEdit={(task) => setEditingTask(task)}
-                 onDelete={deleteTask}
+                onEdit={(task) => setEditingTask(task)}
+                onDelete={deleteTask}
               />
               <TaskColumn
                 title="In Progress"
                 tasks={inProgressTasks}
                 onMove={toggleTaskStatus}
-                 onEdit={(task) => setEditingTask(task)}
+                onEdit={(task) => setEditingTask(task)}
               />
               <TaskColumn
                 title="Completed"
                 tasks={completedTasks}
                 onMove={toggleTaskStatus}
-                 onEdit={(task) => setEditingTask(task)}
+                onEdit={(task) => setEditingTask(task)}
               />
             </div>
           )}
@@ -106,12 +126,12 @@ const Dashboard = () => {
           <AddTaskModal onClose={() => setShowModal(false)} onAdd={addTask} />
         )}
         {editingTask && (
-  <EditTaskModal
-    task={editingTask}
-    onClose={() => setEditingTask(null)}
-    onUpdate={updateTask}
-  />
-)}
+          <EditTaskModal
+            task={editingTask}
+            onClose={() => setEditingTask(null)}
+            onUpdate={updateTask}
+          />
+        )}
       </div>
     </div>
   );
