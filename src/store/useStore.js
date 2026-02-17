@@ -11,7 +11,8 @@ export const useStore = create(
       },
       logout: () => set({ user: null }),
       setTasks: (tasks) => set({ tasks }),
-      addTask:(task)=>set((state)=>({tasks:[...state.tasks,task]})),
+      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+      updateTask:(updatedTask)=>set((state)=>({ tasks:state.tasks.map((task)=>task.id === updatedTask.id? updatedTask:task)})),
       toggleTaskStatus: (id) =>
         set((state) => ({
           tasks: state.tasks.map((task) => {

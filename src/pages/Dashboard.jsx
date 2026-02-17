@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { fetchTasksFromAPI } from "../services/taskService";
 import TaskColumn from "../components/TaskColumn";
 import AddTaskModal from "../components/AddTaskModal";
+import EditTaskModal from "../components/EditTaskModal";
 
 const Dashboard = () => {
   const tasks = useStore((state) => state.tasks);
   const toggleTaskStatus = useStore((state) => state.toggleTaskStatus);
+  const updateTask = useStore((state) => state.updateTask);
   const addTask = useStore((state) => state.addTask);
 
   const todoTasks = tasks.filter((task) => task.status === "todo");
@@ -18,6 +20,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [editingTask,setEditingTask]= useState(null)
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -27,7 +30,8 @@ const Dashboard = () => {
         setTasks(data);
       } catch (error) {
         setError("Failed to fetch tasks");
-        setLoading(false);
+      }finally{
+        setLoading(false)
       }
     };
     if (tasks.length === 0) {
@@ -79,16 +83,19 @@ const Dashboard = () => {
                 title="Todo"
                 tasks={todoTasks}
                 onMove={toggleTaskStatus}
+                 onEdit={(task) => setEditingTask(task)}
               />
               <TaskColumn
                 title="In Progress"
                 tasks={inProgressTasks}
                 onMove={toggleTaskStatus}
+                 onEdit={(task) => setEditingTask(task)}
               />
               <TaskColumn
                 title="Completed"
                 tasks={completedTasks}
                 onMove={toggleTaskStatus}
+                 onEdit={(task) => setEditingTask(task)}
               />
             </div>
           )}
@@ -96,6 +103,13 @@ const Dashboard = () => {
         {showModal && (
           <AddTaskModal onClose={() => setShowModal(false)} onAdd={addTask} />
         )}
+        {editingTask && (
+  <EditTaskModal
+    task={editingTask}
+    onClose={() => setEditingTask(null)}
+    onUpdate={updateTask}
+  />
+)}
       </div>
     </div>
   );
