@@ -5,6 +5,7 @@ import { fetchTasksFromAPI } from "../services/taskService";
 
 const Dashboard = () => {
   const tasks = useStore((state) => state.tasks);
+  const toggleTaskStatus = useStore((state)=>state.toggleTaskStatus)
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const completedTasks = tasks.filter((task) => task.status === "completed");
   const inProgressTasks = tasks.filter((task) => task.status === "inprogress");
@@ -62,7 +63,12 @@ const Dashboard = () => {
               <h2 className="font-bold mb-4">Todo</h2>
               {todoTasks.map((task) => (
                 <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                 <p>
                   {task.title}
+                  </p> 
+                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
+                    Move
+                  </button>
                 </div>
               ))}
             </div>
@@ -71,7 +77,12 @@ const Dashboard = () => {
               <h2 className="font-bold mb-4">In Progress</h2>
               {inProgressTasks.map((task) => (
                 <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                          <p>
                   {task.title}
+                  </p> 
+                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
+                    Move
+                  </button>
                 </div>
               ))}
             </div>
@@ -80,7 +91,12 @@ const Dashboard = () => {
               <h2 className="font-bold mb-4">Completed</h2>
               {completedTasks.map((task) => (
                 <div key={task.id} className="p-3 mb-3 bg-gray-100 rounded">
+                          <p>
                   {task.title}
+                  </p> 
+                  <button className="mt-2 text-sm text-blue-500" onClick={()=>toggleTaskStatus(task.id)}>
+                    Move
+                  </button>
                 </div>
               ))}
             </div>
