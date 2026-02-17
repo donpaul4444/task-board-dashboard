@@ -1,15 +1,37 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
+import { useEffect, useState } from "react";
+import { fetchTasksFromAPI } from "../services/taskService";
 
 const Dashboard = () => {
+  const tasks = useStore((state) => state.tasks);
+  const setTasks = useStore((state) => state.setTasks);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchTasksFromAPI();
+        setTasks(data);
+      } catch (error) {
+        setError("Failed to fetch tasks");
+        setLoading(false);
+      }
+    };
+    if (tasks.length === 0) {
+      loadTasks();
+    }
+  }, []);
   const user = useStore((state) => state.user);
   const logout = useStore((state) => state.logout);
-    const navigate =useNavigate()
+  const navigate = useNavigate();
 
-  const handleLogout =()=>{
-    logout()
-    navigate("/")
-  }
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <div className="h-screen flex bg-gray-100r">
       <div className="w-64 bg-white shadow-md p-4 hidden md:block">
@@ -27,6 +49,7 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="p-6 flex-1 overflow-auto">
+          {loading && <p>Loading tasks...</p>}
           <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
           <p>Task board will here...</p>
         </div>
