@@ -13,6 +13,7 @@ export const useStore = create(
       setTasks: (tasks) => set({ tasks }),
       addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
       updateTask:(updatedTask)=>set((state)=>({ tasks:state.tasks.map((task)=>task.id === updatedTask.id? updatedTask:task)})),
+      deleteTask:(id)=>set((state)=>({tasks:state.tasks.filter((task)=>task.id !==id)})),
       toggleTaskStatus: (id) =>
         set((state) => ({
           tasks: state.tasks.map((task) => {

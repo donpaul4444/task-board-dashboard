@@ -1,7 +1,7 @@
 import React from "react";
 import TaskCard from "./TaskCard";
 
-const TaskColumn = ({ title, tasks, onMove,onEdit }) => {
+const TaskColumn = ({ title, tasks, onMove,onEdit ,onDelete}) => {
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="font-bold mb-4">{title}</h2>
@@ -12,6 +12,7 @@ const TaskColumn = ({ title, tasks, onMove,onEdit }) => {
           task={task} 
           onMove={onMove}
           onEdit={onEdit}
+          onDelete={onDelete}
           />
       ))}
     </div>

@@ -11,6 +11,7 @@ const Dashboard = () => {
   const toggleTaskStatus = useStore((state) => state.toggleTaskStatus);
   const updateTask = useStore((state) => state.updateTask);
   const addTask = useStore((state) => state.addTask);
+  const deleteTask = useStore((state)=>state.deleteTask)
 
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const completedTasks = tasks.filter((task) => task.status === "completed");
@@ -84,6 +85,7 @@ const Dashboard = () => {
                 tasks={todoTasks}
                 onMove={toggleTaskStatus}
                  onEdit={(task) => setEditingTask(task)}
+                 onDelete={deleteTask}
               />
               <TaskColumn
                 title="In Progress"
